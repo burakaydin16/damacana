@@ -1,0 +1,5 @@
+{
+  "name": "Copy of Su Dağıtım ve Depozito Takip Sistemi",
+  "description": "Su distribütörleri için stok, cari, depozito (palet, damacana) ve sevkiyat takip uygulaması. Gemini AI destekli raporlama asistanı içerir.",
+  "requestFramePermissions": []
+}
