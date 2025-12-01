@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { DataService } from '../services/dataService';
 import { Transaction } from '../types';
@@ -15,12 +16,12 @@ export const Reports: React.FC = () => {
     .reverse()
     .map(t => ({
         date: new Date(t.date).toLocaleDateString(undefined, { day: '2-digit', month: '2-digit'}),
-        amount: t.totalAmount
+        amount: t.total_amount
     }));
 
   const transactionsByType = [
-      { name: 'Satış/Çıkış', value: transactions.reduce((acc, t) => acc + t.items.filter(i => i.type === 'Gonderilen').length, 0) },
-      { name: 'İade/Giriş', value: transactions.reduce((acc, t) => acc + t.items.filter(i => i.type === 'IadeAlinan').length, 0) }
+      { name: 'Satış/Çıkış', value: transactions.reduce((acc, t) => acc + t.items.filter(i => i.item_type === 'Gonderilen').length, 0) },
+      { name: 'İade/Giriş', value: transactions.reduce((acc, t) => acc + t.items.filter(i => i.item_type === 'IadeAlinan').length, 0) }
   ];
 
   const COLORS = ['#0ea5e9', '#22c55e'];
@@ -93,7 +94,7 @@ export const Reports: React.FC = () => {
                        {transactions.map(t => (
                            <tr key={t.id} className="border-b last:border-0 hover:bg-gray-50">
                                <td className="px-4 py-3">{new Date(t.date).toLocaleString()}</td>
-                               <td className="px-4 py-3 font-bold">₺{t.totalAmount}</td>
+                               <td className="px-4 py-3 font-bold">₺{t.total_amount}</td>
                                <td className="px-4 py-3">{t.items.length}</td>
                            </tr>
                        ))}

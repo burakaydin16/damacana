@@ -1,3 +1,4 @@
+
 import { GoogleGenAI } from "@google/genai";
 import { DataService } from "./dataService";
 
@@ -9,8 +10,8 @@ const getSystemInstruction = async () => {
 
     const dataContext = JSON.stringify({
         stock: products.map(p => ({ name: p.name, stock: p.stock, price: p.price })),
-        customers: customers.map(c => ({ name: c.name, type: c.type, debt: c.cashBalance, depositBalances: c.depositBalances })),
-        recentTransactions: transactions.map(t => ({ date: t.date, total: t.totalAmount, items: t.items.length }))
+        customers: customers.map(c => ({ name: c.name, type: c.type, debt: c.cash_balance, depositBalances: c.deposit_balances })),
+        recentTransactions: transactions.map(t => ({ date: t.date, total: t.total_amount, items: t.items.length }))
     });
 
     return `

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { DataService } from '../services/dataService';
 import { Product, ProductType } from '../types';
@@ -13,9 +14,9 @@ export const Inventory: React.FC = () => {
     name: '',
     type: ProductType.WATER,
     price: 0,
-    depositPrice: 0,
+    deposit_price: 0,
     stock: 0,
-    linkedDepositId: ''
+    linked_deposit_id: ''
   });
 
   const loadProducts = async () => {
@@ -38,15 +39,15 @@ export const Inventory: React.FC = () => {
         } as Product;
         await DataService.saveProduct(productToSave);
     } else {
-        const newProduct: Product = {
-            id: Date.now().toString(),
+        const newProduct = {
             name: formData.name!,
             type: formData.type || ProductType.WATER,
             price: Number(formData.price) || 0,
-            depositPrice: 0,
+            deposit_price: 0,
             stock: Number(formData.stock) || 0,
-            linkedDepositId: formData.linkedDepositId
+            linked_deposit_id: formData.linked_deposit_id
         };
+        // @ts-ignore - ID is optional on creation
         await DataService.saveProduct(newProduct);
     }
     
@@ -64,7 +65,7 @@ export const Inventory: React.FC = () => {
 
   const openNew = () => {
       setEditingProduct(null);
-      setFormData({ type: ProductType.WATER, price: 0, depositPrice: 0, stock: 0 });
+      setFormData({ type: ProductType.WATER, price: 0, deposit_price: 0, stock: 0 });
       setIsModalOpen(true);
   }
 
@@ -98,7 +99,7 @@ export const Inventory: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-gray-100">
                 {products.map(product => {
-                    const linkedName = products.find(p => p.id === product.linkedDepositId)?.name;
+                    const linkedName = products.find(p => p.id === product.linked_deposit_id)?.name;
                     return (
                         <tr key={product.id} className="hover:bg-gray-50">
                             <td className="p-4 font-medium">{product.name}</td>
@@ -167,8 +168,8 @@ export const Inventory: React.FC = () => {
                             <label className="block text-sm font-medium text-gray-700">Bağlı Depozito (Boş) Ürünü</label>
                             <select 
                                 className="w-full border rounded p-2 mt-1"
-                                value={formData.linkedDepositId || ''}
-                                onChange={e => setFormData({...formData, linkedDepositId: e.target.value})}
+                                value={formData.linked_deposit_id || ''}
+                                onChange={e => setFormData({...formData, linked_deposit_id: e.target.value})}
                             >
                                 <option value="">Yok</option>
                                 {products.filter(p => p.type === ProductType.DEPOSIT).map(p => (

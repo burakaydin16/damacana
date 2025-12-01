@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { DataService } from '../services/dataService';
 import { Customer, Product } from '../types';
@@ -9,7 +10,7 @@ export const Customers: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newCustomer, setNewCustomer] = useState<Partial<Customer>>({ name: '', type: 'Bayi', phone: '', address: '', depositBalances: {}, cashBalance: 0 });
+  const [newCustomer, setNewCustomer] = useState<Partial<Customer>>({ name: '', type: 'Bayi', phone: '', address: '', cash_balance: 0 });
 
   const loadData = async () => {
       const c = await DataService.getCustomers();
@@ -24,16 +25,15 @@ export const Customers: React.FC = () => {
 
   const handleSave = async () => {
       if(!newCustomer.name) return;
-      const customer: Customer = {
-          id: Date.now().toString(),
+      const customer = {
           name: newCustomer.name!,
           type: newCustomer.type as any,
           phone: newCustomer.phone || '',
           address: newCustomer.address || '',
-          depositBalances: {},
-          cashBalance: 0
+          cash_balance: 0
       };
       
+      // @ts-ignore
       await DataService.saveCustomer(customer);
       await loadData();
       
@@ -68,8 +68,8 @@ export const Customers: React.FC = () => {
                           </div>
                           <div className="text-right">
                               <p className="text-sm text-gray-500">Bakiye</p>
-                              <p className={`font-bold ${customer.cashBalance > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                                  {customer.cashBalance > 0 ? `+₺${customer.cashBalance}` : `₺${customer.cashBalance}`}
+                              <p className={`font-bold ${customer.cash_balance > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                  {customer.cash_balance > 0 ? `+₺${customer.cash_balance}` : `₺${customer.cash_balance}`}
                               </p>
                           </div>
                       </div>
@@ -96,7 +96,7 @@ export const Customers: React.FC = () => {
 
                           {expandedId === customer.id && (
                               <div className="mt-3 bg-gray-50 rounded p-3 text-sm space-y-2">
-                                  {Object.entries(customer.depositBalances).map(([prodId, value]) => {
+                                  {customer.deposit_balances && Object.entries(customer.deposit_balances).map(([prodId, value]) => {
                                       const qty = Number(value);
                                       const prodName = products.find(p => p.id === prodId)?.name || 'Bilinmeyen Ürün';
                                       if (qty === 0) return null;
@@ -110,7 +110,7 @@ export const Customers: React.FC = () => {
                                           </div>
                                       );
                                   })}
-                                  {Object.values(customer.depositBalances).every(v => Number(v) === 0) && (
+                                  {(!customer.deposit_balances || Object.values(customer.deposit_balances).every(v => Number(v) === 0)) && (
                                       <p className="text-gray-400 italic">Depozito hareketi yok.</p>
                                   )}
                               </div>

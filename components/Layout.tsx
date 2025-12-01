@@ -50,8 +50,11 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
         
         <div className="p-4 border-t border-slate-800">
           <div className="bg-slate-800 rounded-lg p-3">
-            <p className="text-xs text-slate-400">Aktif Kullanıcı</p>
-            <p className="text-sm font-semibold">Demo Distribütör</p>
+            <p className="text-xs text-slate-400">Bulut Bağlantısı</p>
+            <div className="flex items-center gap-2 mt-1">
+                 <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                 <p className="text-sm font-semibold">Supabase Aktif</p>
+            </div>
           </div>
         </div>
       </aside>

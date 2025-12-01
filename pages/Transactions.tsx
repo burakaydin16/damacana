@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { DataService } from '../services/dataService';
 import { Customer, Product, Transaction, TransactionItem, ProductType } from '../types';
@@ -28,10 +29,10 @@ export const Transactions: React.FC = () => {
   const addItem = () => {
       if (products.length === 0) return;
       setItems([...items, { 
-          productId: products[0].id, 
+          product_id: products[0].id, 
           quantity: 1, 
-          type: mode === 'CustomerOp' ? 'Gonderilen' : 'StokGirisi', 
-          priceSnapshot: products[0].price 
+          item_type: mode === 'CustomerOp' ? 'Gonderilen' : 'StokGirisi', 
+          unit_price: products[0].price 
       }]);
   };
 
@@ -39,10 +40,10 @@ export const Transactions: React.FC = () => {
       const newItems = [...items];
       const item = newItems[index];
       
-      if (field === 'productId') {
+      if (field === 'product_id') {
           const product = products.find(p => p.id === value);
-          item.productId = value;
-          item.priceSnapshot = product ? product.price : 0;
+          item.product_id = value;
+          item.unit_price = product ? product.price : 0;
       } else {
           (item as any)[field] = value;
       }
@@ -58,11 +59,11 @@ export const Transactions: React.FC = () => {
       if (items.length === 0) return;
 
       const transaction: Transaction = {
-          id: Date.now().toString(),
+          id: '', // Supabase üretecek
           date: new Date().toISOString(),
-          customerId: mode === 'CustomerOp' ? selectedCustomer : undefined,
+          customer_id: mode === 'CustomerOp' ? selectedCustomer : undefined,
           items: items,
-          totalAmount: 0, 
+          total_amount: 0, 
           type: mode
       };
 
@@ -82,9 +83,9 @@ export const Transactions: React.FC = () => {
   };
 
   const totalMoney = items.reduce((acc, item) => {
-      if (item.type === 'Gonderilen') {
-         const p = products.find(prod => prod.id === item.productId);
-         if (p && p.type === ProductType.WATER) return acc + (item.quantity * item.priceSnapshot);
+      if (item.item_type === 'Gonderilen') {
+         const p = products.find(prod => prod.id === item.product_id);
+         if (p && p.type === ProductType.WATER) return acc + (item.quantity * item.unit_price);
       }
       return acc;
   }, 0);
@@ -155,9 +156,9 @@ export const Transactions: React.FC = () => {
                       <div className="flex-1 w-full">
                           <p className="text-xs text-gray-500 mb-1">İşlem Türü</p>
                           <select 
-                            className={`w-full p-2 rounded border font-medium ${item.type === 'Gonderilen' ? 'text-blue-700 bg-blue-50 border-blue-200' : item.type === 'IadeAlinan' ? 'text-green-700 bg-green-50 border-green-200' : 'text-indigo-700 bg-indigo-50 border-indigo-200'}`}
-                            value={item.type}
-                            onChange={e => updateItem(index, 'type', e.target.value)}
+                            className={`w-full p-2 rounded border font-medium ${item.item_type === 'Gonderilen' ? 'text-blue-700 bg-blue-50 border-blue-200' : item.item_type === 'IadeAlinan' ? 'text-green-700 bg-green-50 border-green-200' : 'text-indigo-700 bg-indigo-50 border-indigo-200'}`}
+                            value={item.item_type}
+                            onChange={e => updateItem(index, 'item_type', e.target.value)}
                             disabled={mode === 'FactoryOp'} 
                           >
                               {mode === 'CustomerOp' ? (
@@ -175,12 +176,12 @@ export const Transactions: React.FC = () => {
                           <p className="text-xs text-gray-500 mb-1">Ürün</p>
                           <select 
                              className="w-full p-2 rounded border"
-                             value={item.productId}
-                             onChange={e => updateItem(index, 'productId', e.target.value)}
+                             value={item.product_id}
+                             onChange={e => updateItem(index, 'product_id', e.target.value)}
                           >
                               {products.map(p => (
                                   <option key={p.id} value={p.id}>
-                                      {p.name} {item.type === 'Gonderilen' && p.type === ProductType.WATER ? `(₺${p.price})` : ''}
+                                      {p.name} {item.item_type === 'Gonderilen' && p.type === ProductType.WATER ? `(₺${p.price})` : ''}
                                   </option>
                               ))}
                           </select>
